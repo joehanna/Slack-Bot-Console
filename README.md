@@ -8,7 +8,10 @@ A simple Slack integration library
 
 # Simple usage
  * Open a commandline
- * Execute: Slack/SlackConsole/bin/debug/SlackConsole.exe {your slack bot token}
+ * Execute: 
+ ```
+Slack/SlackConsole/bin/debug/SlackConsole.exe {your slack bot token} 
+ ```
  * Once connected, go to your Slack client and select the bot under "Direct Messages".
  * Type "echo blah".
  * The bot will reply with "ECHO: blah".
