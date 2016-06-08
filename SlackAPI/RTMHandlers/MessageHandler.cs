@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Pook.SlackAPI.RTMMessages;
+using System.Diagnostics;
 
 namespace Pook.SlackAPI.RTMHandlers
 {
@@ -28,7 +29,13 @@ namespace Pook.SlackAPI.RTMHandlers
 
 		public void Handle(ISlackSocket socket, Message message)
 		{
-			Console.WriteLine("Message: " + message.text);
+            if (string.IsNullOrEmpty(message?.text))
+            {
+                Debug.WriteLine("Empty message");
+                return;
+            }
+
+            Debug.WriteLine("Message: " + message.text);
 
 			foreach (var responder in responders)
 			{

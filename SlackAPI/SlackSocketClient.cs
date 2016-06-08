@@ -62,8 +62,8 @@ namespace Pook.SlackAPI
             var login = await API.GetRtmLogin();
             Debug.WriteLine("RTM Login: " + login.url);
             State = new SlackState(login);
-            handlerQueue = QueueHandler<string>.Start(HandleItem, cts.Token);
-            sendQueue = QueueHandler<string>.Start(SendItem, cts.Token);
+            handlerQueue = QueueHandler<string>.StartWithAction(HandleItem, cts.Token);
+            sendQueue = QueueHandler<string>.StartWithAsync(SendItem, cts.Token);
             await socket.ConnectAsync(new Uri(login.url));
             Debug.WriteLine("RTM: connected");
             Connected?.Invoke();
@@ -103,7 +103,7 @@ namespace Pook.SlackAPI
             sendQueue.Add(JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
         }
 
-        private async Task HandleItem(string data)
+        private void HandleItem(string data)
         {
             // deserialize to Messge
             SlackSocketMessage message;
@@ -113,6 +113,7 @@ namespace Pook.SlackAPI
             }
             catch (JsonSerializationException)
             {
+                Debug.WriteLine($"ERROR: bad json: " + data);
                 return;
             }
 

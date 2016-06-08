@@ -9,9 +9,15 @@ namespace Pook.SlackAPI
 {
     public class QueueHandler<T>
     {
-        public static QueueHandler<T> Start(Func<T, Task> handler, CancellationToken? token = null, int maxDegreeOfParallelism = 5)
+        public static QueueHandler<T> StartWithAsync(Func<T, Task> handler, CancellationToken? token = null, int maxDegreeOfParallelism = 5)
         {
             var q = new QueueHandler<T>(handler, token, maxDegreeOfParallelism);
+            q.Start();
+            return q;
+        }
+        public static QueueHandler<T> StartWithAction(Action<T> handler, CancellationToken? token = null, int maxDegreeOfParallelism = 5)
+        {
+            var q = new QueueHandler<T>(x => { handler(x); return Task.FromResult(0); }, token, maxDegreeOfParallelism);
             q.Start();
             return q;
         }
