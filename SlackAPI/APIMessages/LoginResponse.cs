@@ -187,8 +187,7 @@ namespace Pook.SlackAPI.APIMessages
 
 		public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
 		{
-			//Not sure if this is correct :D
-			throw new NotSupportedException("Too hackish for this shi.");
+			throw new NotSupportedException("JavascriptBotsToArray converter can only read");
 		}
 	}
 
@@ -228,7 +227,12 @@ namespace Pook.SlackAPI.APIMessages
 		public bool is_owner;
 		public bool has_files;
 		public string presence;
-	}
+
+        public override string ToString()
+        {
+            return name;
+        }
+    }
 	public class UserProfile
 	{
 		public string first_name;

@@ -1,6 +1,8 @@
-﻿
+﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using Pook.SlackAPI;
-using System;
+using Pook.SlackAPI.RTMMessages;
 
 namespace SlackConsole
 {
@@ -24,11 +26,30 @@ namespace SlackConsole
 			if (string.IsNullOrEmpty(token))
 				throw new Exception("a Slack RTM token MUST be supplied");
 
+            Trace.Listeners.Add(new ConsoleTraceListener());
+
 			var socket = new SlackSocket(token);
 			socket.Login().Wait();
 			Console.WriteLine(socket.State.Url);
-			Console.Write("Press enter to quit...");
+
+            socket.SendSelf("pookbot lives!");
+
+            Console.Write("Press enter to quit...");
 			Console.ReadLine();
 		}
 	}
+
+    public class HelloResponder: IMessageResponder
+    {
+        public bool CanRespond(Message message)
+        {
+            return message.text.StartsWith("hello", StringComparison.InvariantCultureIgnoreCase);
+        }
+
+        public Task Respond(ISlackSocket socket, Message message)
+        {
+            socket.Send(message.Reply("hey"));
+            return Task.FromResult(0);
+        }
+    }
 }
