@@ -80,7 +80,6 @@
     <Compile Include="ISlackSocket.cs" />
     <Compile Include="RTMHandlers\HelloHandler.cs" />
     <Compile Include="IEventHandler.cs" />
-    <Compile Include="RTMHandlers\MessageHandler.cs" />
     <Compile Include="RTMHandlers\PresenceChangeHandler.cs" />
     <Compile Include="RTMMessages\Hello.cs" />
     <Compile Include="RTMMessages\Message.cs" />
