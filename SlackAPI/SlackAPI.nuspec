@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package >
   <metadata>
-    <id>Artesian.SlackAPI</id>
+    <id>Pook.SlackAPI</id>
     <version>$version$</version>
     <title>Pook.SlackAPI</title>
     <authors>Andy Pook</authors>
