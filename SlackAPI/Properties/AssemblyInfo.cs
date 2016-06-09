@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Artesian.SlackAPI")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Pook.SlackAPI")]
+[assembly: AssemblyDescription("A simple Slack integration library")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("Artesian.SlackAPI")]
+[assembly: AssemblyCompany("Pook")]
+[assembly: AssemblyProduct("Pook.SlackAPI")]
 [assembly: AssemblyCopyright("Copyright ©  2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
