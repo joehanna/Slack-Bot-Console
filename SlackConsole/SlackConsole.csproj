@@ -53,7 +53,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SlackAPI\SlackAPI.csproj">
       <Project>{d67d593d-29d1-47b8-950c-80baac8af01c}</Project>
-      <Name>Artesian.SlackAPI</Name>
+      <Name>SlackAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
