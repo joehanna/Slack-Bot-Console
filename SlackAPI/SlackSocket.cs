@@ -201,17 +201,28 @@ namespace Pook.SlackAPI
                 user.NextStep = null;
             }
 
-            bool handled = false;
-            foreach (var responder in Responders)
+            var responder = GetResponder(message, user);
+            await responder(this, message, user);
+        }
+
+        private Func<ISlackSocket, Message, SlackUser, Task> GetResponder(Message message, SlackUser user)
+        {
+            // finds a single responder
+            // if zero or more than one matches return the DefaultResponder
+
+            IMessageResponder responder = null;
+            foreach (var r in Responders)
             {
-                if (responder.CanRespond(message, user))
+                if (r.CanRespond(message, user))
                 {
-                    await responder.Respond(this, message, user);
-                    handled = true;
+                    if (responder != null)
+                        return DefaultResponder;
+                    responder = r;
                 }
             }
-            if (!handled && DefaultResponder != null)
-                await DefaultResponder(this, message, user);
+            if (responder == null)
+                return DefaultResponder;
+            return responder.Respond;
         }
 
         private async Task SendItem(string message)
