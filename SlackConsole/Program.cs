@@ -28,7 +28,9 @@ namespace SlackConsole
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-			var socket = new SlackSocket(token).AddBuiltinEventHandlers().AddBuiltinResponders();
+			var socket = new SlackSocket(token)
+                .AddAllEventHandlers()
+                .AddAllResponders();
 			socket.Login().Wait();
 			Console.WriteLine(socket.State.Url);
 

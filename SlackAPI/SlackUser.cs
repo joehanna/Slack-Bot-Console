@@ -1,12 +1,13 @@
 ﻿using System.Collections.Concurrent;
-using Pook.SlackAPI.APIMessages;
+using Pook.SlackAPI.RTMMessages;
 using System;
+using System.Threading.Tasks;
 
 namespace Pook.SlackAPI
 {
     public class SlackUser
     {
-        public SlackUser(User user)
+        public SlackUser(APIMessages.User user)
         {
             Id = user.id;
             Name = user.name;
@@ -54,9 +55,11 @@ namespace Pook.SlackAPI
             return (T)result;
         }
 
+        public Func<ISlackSocket, Message, SlackUser, Task<bool>> NextStep { get; set; }
+
         public override string ToString()
         {
-            return Name;
+            return $"{Name}<{Id}>";
         }
     }
 }

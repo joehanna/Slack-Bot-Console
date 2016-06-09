@@ -53,12 +53,28 @@ namespace Pook.SlackAPI
         {
             channels[channel.id] = channel;
         }
+        public Channel GetChannel(string id)
+        {
+            Channel channel;
+            if (channels.TryGetValue(id, out channel))
+                return channel;
+
+            return null;
+        }
 
         public IEnumerable<Channel> Groups => groups.Values;
         private readonly ConcurrentDictionary<string, Channel> groups = new ConcurrentDictionary<string, Channel>();
         public void AddUpdateGroup(Channel group)
         {
             groups[group.id] = group;
+        }
+        public Channel GetGroup(string id)
+        {
+            Channel channel;
+            if (groups.TryGetValue(id, out channel))
+                return channel;
+
+            return null;
         }
 
         /// <summary>
@@ -70,13 +86,28 @@ namespace Pook.SlackAPI
         {
             ims[channel.id] = channel;
         }
+        public DirectMessageChannel GetDMChannel(string id)
+        {
+            DirectMessageChannel channel;
+            if (ims.TryGetValue(id, out channel))
+                return channel;
+
+            return null;
+        }
 
         public ICollection<Bot> Bots => bots.Values;
         private readonly ConcurrentDictionary<string, Bot> bots = new ConcurrentDictionary<string, Bot>();
-
         public void AddUpdate(Bot bot)
         {
             bots[bot.id] = bot;
+        }
+        public Bot GetBot(string id)
+        {
+            Bot bot;
+            if (bots.TryGetValue(id, out bot))
+                return bot;
+
+            return null;
         }
     }
 }

@@ -45,7 +45,7 @@ namespace Pook.SlackAPI
         public bool IsConnected => socket.IsConnected;
 
         public IReadOnlyCollection<IMessageResponder> Responders => responders;
-        public Action<ISlackSocket, Message, SlackUser> DefaultResponder { get; set; }
+        public Func<ISlackSocket, Message, SlackUser, Task> DefaultResponder { get; set; }
 
         public SlackSocket AddEventHandler(Type eventHandlerType)
         {
@@ -69,7 +69,7 @@ namespace Pook.SlackAPI
             var login = await API.GetRtmLogin();
             Debug.WriteLine("RTM Login: " + login.url);
             State = new SlackState(login);
-            handlerQueue = QueueHandler<string>.StartWithAction(HandleIncoming, cts.Token);
+            handlerQueue = QueueHandler<string>.StartWithAsync(HandleIncoming, cts.Token);
             sendQueue = QueueHandler<string>.StartWithAsync(SendItem, cts.Token);
             await socket.ConnectAsync(new Uri(login.url));
             Debug.WriteLine("RTM: connected");
@@ -105,7 +105,7 @@ namespace Pook.SlackAPI
             Send(message);
         }
 
-        private void HandleIncoming(string data)
+        private async Task HandleIncoming(string data)
         {
             // deserialize to Messge
             SlackSocketMessage message;
@@ -146,7 +146,7 @@ namespace Pook.SlackAPI
                 }
 
                 if (message.type == "message")
-                    HandleMessage(data);
+                    await HandleMessage(data);
                 else
                 {
                     SlackEventHandler handler;
@@ -162,7 +162,7 @@ namespace Pook.SlackAPI
             }
         }
 
-        public void HandleMessage(string data)
+        public async Task HandleMessage(string data)
         {
             var message = JsonConvert.DeserializeObject<Message>(data, unixDateTimeConverter);
             if (string.IsNullOrEmpty(message?.text))
@@ -192,17 +192,26 @@ namespace Pook.SlackAPI
                 return;
             }
 
+            if (user.NextStep != null)
+            {
+                var success = await user.NextStep(this, message, user);
+                if (success)
+                    return;
+
+                user.NextStep = null;
+            }
+
             bool handled = false;
             foreach (var responder in Responders)
             {
                 if (responder.CanRespond(message, user))
                 {
-                    responder.Respond(this, message, user);
+                    await responder.Respond(this, message, user);
                     handled = true;
                 }
             }
             if (!handled && DefaultResponder != null)
-                DefaultResponder(this, message, user);
+                await DefaultResponder(this, message, user);
         }
 
         private async Task SendItem(string message)

@@ -43,7 +43,12 @@ namespace Pook.SlackAPI.APIMessages
 		public UserProfile icons;
 		public string id;
 		public string name;
-	}
+
+        public override string ToString()
+        {
+            return $"{name}<{id}>";
+        }
+    }
 	public class Channel
 	{
 		public string id;
@@ -68,13 +73,23 @@ namespace Pook.SlackAPI.APIMessages
 
 		public int unread_count;
 		public int unread_count_display;
-	}
+
+        public override string ToString()
+        {
+            return $"{name}<{id}>";
+        }
+    }
 
 	public class Error
 	{
 		public int code;
 		public string msg;
-	}
+
+        public override string ToString()
+        {
+            return $"{code}: {msg}>";
+        }
+    }
 	public class ChannelDetails
 	{
 		public string value;
@@ -93,7 +108,12 @@ namespace Pook.SlackAPI.APIMessages
 		public string last_read;
 		public Message latest;
 		public int unread_count;
-	}
+
+        public override string ToString()
+        {
+            return $"DM: {user}<{id}>";
+        }
+    }
 	public class Team
 	{
 		[JsonConverter(typeof(JavascriptBotsToArray))]
@@ -119,7 +139,12 @@ namespace Pook.SlackAPI.APIMessages
 		public string sso_type;
 		public string url;
 		public SSOProvider[] sso_provider;
-	}
+
+        public override string ToString()
+        {
+            return $"{name}<{id}>";
+        }
+    }
 
 	public class MultipartyIM
 	{
@@ -135,7 +160,12 @@ namespace Pook.SlackAPI.APIMessages
 		public Message lastest;
 		public int unread_count;
 		public int unread_count_display;
-	}
+
+        public override string ToString()
+        {
+            return $"MultiDM{name}<{id}>";
+        }
+    }
 
 	public class JavascriptBotsToArray : JsonConverter
 	{
@@ -230,7 +260,7 @@ namespace Pook.SlackAPI.APIMessages
 
         public override string ToString()
         {
-            return name;
+            return $"{name}<{id}>";
         }
     }
 	public class UserProfile
