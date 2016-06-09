@@ -86,12 +86,14 @@
     <Compile Include="RTMMessages\Message.cs" />
     <Compile Include="RTMMessages\PresenceChange.cs" />
     <Compile Include="SlackAPIClient.cs" />
-    <Compile Include="SlackSocketClient.cs" />
+    <Compile Include="SlackSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SlackSocketExtensions.cs" />
     <Compile Include="SlackSocketRoutingAttribute.cs" />
+    <Compile Include="SlackUserProfile.cs" />
     <Compile Include="SlackWebHookClient.cs" />
     <Compile Include="SlackState.cs" />
-    <Compile Include="TeamMember.cs" />
+    <Compile Include="SlackUser.cs" />
     <Compile Include="UnixDateTimeConverter.cs" />
   </ItemGroup>
   <ItemGroup>

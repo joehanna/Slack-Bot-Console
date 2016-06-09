@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Pook.SlackAPI
 {
@@ -6,7 +7,9 @@ namespace Pook.SlackAPI
 	{
 		SlackState State { get; }
 		ISlackAPI API { get; }
-		void Send<T>(SlackSocketMessage message, Action<T> callback) where T : SlackSocketMessage;
+        IReadOnlyCollection<IMessageResponder> Responders { get; }
+
+        void Send<T>(SlackSocketMessage message, Action<T> callback) where T : SlackSocketMessage;
 		void Send(SlackSocketMessage message);
 	}
 }

@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{903A48A8-72AB-444B-87E9-A79DBCEC816F}"
 	ProjectSection(SolutionItems) = preProject
 		appveyor.yml = appveyor.yml
+		SlackAPI\SlackAPI.nuspec = SlackAPI\SlackAPI.nuspec
 	EndProjectSection
 EndProject
 Global

@@ -4,15 +4,15 @@ using System;
 
 namespace Pook.SlackAPI
 {
-    public class TeamMember
+    public class SlackUser
     {
-        public TeamMember(User user)
+        public SlackUser(User user)
         {
             Id = user.id;
             Name = user.name;
             Deleted = user.deleted;
             Color = user.color;
-            Profile = new TeamMemberProfile(user.profile);
+            Profile = new SlackUserProfile(user.profile);
             IsAdmin = user.is_admin;
             IsOwner = user.is_owner;
             HasFiles = user.has_files;
@@ -26,7 +26,7 @@ namespace Pook.SlackAPI
         public string Name { get; }
         public bool Deleted { get; }
         public string Color { get; }
-        public TeamMemberProfile Profile { get; }
+        public SlackUserProfile Profile { get; }
         public bool IsAdmin { get; }
         public bool IsOwner { get; }
         public bool HasFiles { get; }
@@ -57,40 +57,6 @@ namespace Pook.SlackAPI
         public override string ToString()
         {
             return Name;
-        }
-    }
-    public class TeamMemberProfile
-    {
-        public TeamMemberProfile(UserProfile profile)
-        {
-            FirstName = profile.first_name;
-            LastName = profile.last_name;
-            RealName = profile.real_name;
-            Email = profile.email;
-            Skype = profile.skype;
-            Phone = profile.phone;
-            Image24 = profile.image_24;
-            Image32 = profile.image_32;
-            Image48 = profile.image_48;
-            Image72 = profile.image_72;
-            Image192 = profile.image_192;
-        }
-
-        public string FirstName { get; }
-        public string LastName { get; }
-        public string RealName { get; }
-        public string Email { get; }
-        public string Skype { get; }
-        public string Phone { get; }
-        public string Image24 { get; }
-        public string Image32 { get; }
-        public string Image48 { get; }
-        public string Image72 { get; }
-        public string Image192 { get; }
-
-        public override string ToString()
-        {
-            return RealName;
         }
     }
 }

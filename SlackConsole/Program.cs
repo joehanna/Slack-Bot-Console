@@ -28,7 +28,7 @@ namespace SlackConsole
 
             Trace.Listeners.Add(new ConsoleTraceListener());
 
-			var socket = new SlackSocket(token);
+			var socket = new SlackSocket(token).AddBuiltinEventHandlers().AddBuiltinResponders();
 			socket.Login().Wait();
 			Console.WriteLine(socket.State.Url);
 
@@ -39,17 +39,4 @@ namespace SlackConsole
 		}
 	}
 
-    public class HelloResponder: IMessageResponder
-    {
-        public bool CanRespond(Message message)
-        {
-            return message.text.StartsWith("hello", StringComparison.InvariantCultureIgnoreCase);
-        }
-
-        public Task Respond(ISlackSocket socket, Message message)
-        {
-            socket.Send(message.Reply("hey"));
-            return Task.FromResult(0);
-        }
-    }
 }

@@ -1,32 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
+using System.Diagnostics;
 
 using Pook.SlackAPI.RTMMessages;
-using System.Diagnostics;
 
 namespace Pook.SlackAPI.RTMHandlers
 {
 	[SlackSocketRouting("message")]
 	public class MessageHandler : IEventHandler<Message>
 	{
-		static readonly List<IMessageResponder> responders = new List<IMessageResponder>();
-
-		static MessageHandler()
-		{
-			foreach (var assy in AppDomain.CurrentDomain.GetAssemblies())
-			{
-				if (assy.GlobalAssemblyCache)
-					continue;
-
-				foreach (var t in assy.GetTypes())
-				{
-					if (t.GetInterfaces().Any(i => i == typeof(IMessageResponder)))
-						responders.Add((IMessageResponder)Activator.CreateInstance(t));
-				}
-			}
-		}
-
 		public void Handle(ISlackSocket socket, Message message)
 		{
             if (string.IsNullOrEmpty(message?.text))
@@ -37,10 +18,11 @@ namespace Pook.SlackAPI.RTMHandlers
 
             Debug.WriteLine("Message: " + message.text);
 
-			foreach (var responder in responders)
+            var user = socket.State.GetUser(message.user);
+			foreach (var responder in socket.Responders)
 			{
-				if (responder.CanRespond(message))
-					responder.Respond(socket, message);
+				if (responder.CanRespond(message, user))
+					responder.Respond(socket, message, user);
 			}
 		}
 	}

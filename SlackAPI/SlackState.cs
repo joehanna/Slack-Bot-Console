@@ -32,15 +32,15 @@ namespace Pook.SlackAPI
         public Self Self { get; }
         public Team Team { get; }
 
-        public IEnumerable<TeamMember> Users => users.Values;
-        private readonly ConcurrentDictionary<string, TeamMember> users = new ConcurrentDictionary<string, TeamMember>();
+        public IEnumerable<SlackUser> Users => users.Values;
+        private readonly ConcurrentDictionary<string, SlackUser> users = new ConcurrentDictionary<string, SlackUser>();
         public void AddUpdate(User user)
         {
-            users[user.id] = new TeamMember(user);
+            users[user.id] = new SlackUser(user);
         }
-        public TeamMember GetUser(string id)
+        public SlackUser GetUser(string id)
         {
-            TeamMember user;
+            SlackUser user;
             if (users.TryGetValue(id, out user))
                 return user;
 

@@ -1,21 +1,20 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
-
+using Pook.SlackAPI;
 using Pook.SlackAPI.RTMMessages;
 
-namespace Pook.SlackAPI.RTMResponders
+namespace SlackConsole
 {
-    public class EchoReponder : IMessageResponder
+    public class HelloResponder : IMessageResponder
     {
         public bool CanRespond(Message message, SlackUser user)
         {
-            return message.text.StartsWith("echo", StringComparison.OrdinalIgnoreCase);
+            return message.text.StartsWith("hello", StringComparison.InvariantCultureIgnoreCase);
         }
 
         public Task Respond(ISlackSocket socket, Message message, SlackUser user)
         {
-            socket.Send(message.Reply("ECHO: " + message.text.Replace("echo", string.Empty)));
-
+            socket.Send(message.Reply("hey"));
             return Task.FromResult(0);
         }
     }

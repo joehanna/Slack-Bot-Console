@@ -6,7 +6,7 @@ namespace Pook.SlackAPI
 {
 	public interface IMessageResponder
 	{
-		bool CanRespond(Message message);
-		Task Respond(ISlackSocket socket, Message message);
+		bool CanRespond(Message message, SlackUser user);
+		Task Respond(ISlackSocket socket, Message message, SlackUser user);
 	}
 }
