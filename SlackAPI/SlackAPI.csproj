@@ -73,7 +73,7 @@
     <Compile Include="RetryPolicy.cs" />
     <Compile Include="RTMMessages\ReconnectUrl.cs" />
     <Compile Include="RTMHandlers\ReconnectUrlHandler.cs" />
-    <Compile Include="RTMResponders\EchoReponder.cs" />
+    <Compile Include="RTMResponders\EchoResponder.cs" />
     <Compile Include="IMessageResponder.cs" />
     <Compile Include="ISlackAPI.cs" />
     <Compile Include="ISlackAPIExtensions.cs" />
@@ -84,6 +84,7 @@
     <Compile Include="RTMMessages\Hello.cs" />
     <Compile Include="RTMMessages\Message.cs" />
     <Compile Include="RTMMessages\PresenceChange.cs" />
+    <Compile Include="RTMResponders\HelpResponder.cs" />
     <Compile Include="SlackAPIClient.cs" />
     <Compile Include="SlackSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

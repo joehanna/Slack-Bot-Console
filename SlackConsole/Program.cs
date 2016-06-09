@@ -32,8 +32,6 @@ namespace SlackConsole
 			socket.Login().Wait();
 			Console.WriteLine(socket.State.Url);
 
-            socket.SendSelf("pookbot lives!");
-
             Console.Write("Press enter to quit...");
 			Console.ReadLine();
 		}

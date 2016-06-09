@@ -5,7 +5,7 @@ using Pook.SlackAPI.RTMMessages;
 
 namespace Pook.SlackAPI.RTMResponders
 {
-    public class EchoReponder : IMessageResponder
+    public class EchoResponder : IMessageResponder
     {
         public bool CanRespond(Message message, SlackUser user)
         {

@@ -82,14 +82,6 @@ namespace Pook.SlackAPI
              };
         }
 
-        public void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback)
-        {
-            message.id = Interlocked.Increment(ref currentId);
-            callbacks.TryAdd(message.id, callback);
-
-            Send(message);
-        }
-
         public void Send(SlackSocketMessage message)
         {
             if (message.id == 0)
@@ -103,6 +95,14 @@ namespace Pook.SlackAPI
             }
 
             sendQueue.Add(JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+        }
+
+        public void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback)
+        {
+            message.id = Interlocked.Increment(ref currentId);
+            callbacks.TryAdd(message.id, callback);
+
+            Send(message);
         }
 
         private void HandleIncoming(string data)
