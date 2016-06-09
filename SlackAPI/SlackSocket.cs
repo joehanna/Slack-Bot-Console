@@ -45,6 +45,7 @@ namespace Pook.SlackAPI
         public bool IsConnected => socket.IsConnected;
 
         public IReadOnlyCollection<IMessageResponder> Responders => responders;
+        public Action<ISlackSocket, Message, SlackUser> DefaultResponder { get; set; }
 
         public SlackSocket AddEventHandler(Type eventHandlerType)
         {
@@ -191,11 +192,17 @@ namespace Pook.SlackAPI
                 return;
             }
 
+            bool handled = false;
             foreach (var responder in Responders)
             {
                 if (responder.CanRespond(message, user))
+                {
                     responder.Respond(this, message, user);
+                    handled = true;
+                }
             }
+            if (!handled && DefaultResponder != null)
+                DefaultResponder(this, message, user);
         }
 
         private async Task SendItem(string message)
