@@ -45,19 +45,20 @@ namespace Pook.SlackAPI
 
         private async Task SocketLoop()
         {
-            while (IsConnected)
+            while (!cancellationToken.IsCancellationRequested && IsConnected)
             {
                 var msg = await ReceiveAsync();
-                MessageReceived?.Invoke(msg);
+                if (!string.IsNullOrEmpty(msg))
+                    MessageReceived?.Invoke(msg);
             }
         }
 
-        public async Task<string> ReceiveAsync()
+        private async Task<string> ReceiveAsync()
         {
             WebSocketReceiveResult result = null;
             var buffer = new ArraySegment<byte>(new byte[1024]);
             var msg = new StringBuilder();
-            while (result == null || !result.EndOfMessage)
+            while (!cancellationToken.IsCancellationRequested && result == null || !result.EndOfMessage)
             {
                 result = await socket.ReceiveAsync(buffer, cancellationToken);
                 msg.Append(Encoding.UTF8.GetString(buffer.Array, 0, result.Count));
