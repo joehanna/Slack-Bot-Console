@@ -2,9 +2,11 @@
 using System.Threading.Tasks;
 
 using Pook.SlackAPI.RTMMessages;
+using System.ComponentModel;
 
 namespace Pook.SlackAPI.RTMResponders
 {
+    [Description("Tells you what you said")]
     public class EchoResponder : IMessageResponder
     {
         public bool CanRespond(Message message, SlackUser user)
