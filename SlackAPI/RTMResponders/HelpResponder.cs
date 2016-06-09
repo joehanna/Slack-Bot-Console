@@ -24,7 +24,7 @@ namespace SlackAPI.RTMResponders
             {
                 var attr = (DescriptionAttribute)r.GetType().GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
                 string name = CapitalToSpace(r.GetType().Name.Replace("Responder", string.Empty));
-                response.AppendLine($"*{name}* {attr?.Description}");
+                response.AppendLine($"*{name}* - {attr?.Description}");
             }
 
             socket.Send(message.Reply("Here's is what I know \n>>>" + response.ToString()));
