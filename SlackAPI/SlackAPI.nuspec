@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>Artesian.SlackAPI</id>
+    <version>$version$</version>
+    <title>Artesian.SlackAPI</title>
+    <authors>Andy Pook</authors>
+    <owners>Andy Pook</owners>
+    <projectUrl>https://github.com/AndyPook/Slack</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A simple Slack integration library</description>
+    <copyright>Copyright 2016</copyright>
+    <tags>Slack API</tags>
+    <dependencies>
+      <dependency id="Microsoft.AspNet.WebApi.Client" version="5.2.3" />
+      <dependency id="Microsoft.AspNet.WebApi.Core" version="5.2.3" />
+      <dependency id="Microsoft.Tpl.Dataflow" version="4.5.24" />
+      <dependency id="Newtonsoft.Json" version="8.0.2" />
+    </dependencies>
+  </metadata>
+    <files>
+        <file src="bin\$configuration$\SlackAPI.dll" target="lib\net452\SlackAPI.dll" />
+    </files>
+</package>
