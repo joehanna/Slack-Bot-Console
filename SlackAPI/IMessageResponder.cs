@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+
 using Pook.SlackAPI.RTMMessages;
 
 namespace Pook.SlackAPI

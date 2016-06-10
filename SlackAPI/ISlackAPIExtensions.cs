@@ -10,6 +10,7 @@ namespace Pook.SlackAPI
 		{
 			return client.ChatUpdate(originalMessage.ts, originalMessage.channel, newText);
 		}
+
 		public static Task<ChatMessageResponse> ChatPostMessage(this ISlackAPI client, string channel, string text)
 		{
 			return client.ChatPostMessage(new ChatMessage

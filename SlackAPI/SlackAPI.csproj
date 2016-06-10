@@ -88,7 +88,9 @@
     <Compile Include="SlackAPIClient.cs" />
     <Compile Include="SlackSocket.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SlackSocketExtensions.cs" />
+    <Compile Include="SlackSocketHandlerExtensions.cs" />
+    <Compile Include="SlackSocketMessage.cs" />
+    <Compile Include="SlackSocketResponderExtensions.cs" />
     <Compile Include="SlackSocketRoutingAttribute.cs" />
     <Compile Include="SlackUserProfile.cs" />
     <Compile Include="SlackWebHookClient.cs" />

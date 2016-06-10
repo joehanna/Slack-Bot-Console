@@ -8,9 +8,9 @@ namespace Pook.SlackAPI
 	{
 		SlackState State { get; }
 		ISlackAPI API { get; }
-        IReadOnlyCollection<IMessageResponder> Responders { get; }
+		IReadOnlyCollection<IMessageResponder> Responders { get; }
 
 		void Send(SlackSocketMessage message);
-        void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback);
-    }
+		void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback);
+	}
 }
