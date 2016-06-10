@@ -8,9 +8,10 @@ namespace Pook.SlackAPI.RTMMessages
         public virtual string subtype { get; set; }
         public string user;
 		public string channel;
-		public string text;
 		public string team;
 		public string ts;
+		public string text;
+        public bool mrkdwn;
 
         public IList<MessageAttachment> attachments;
 
