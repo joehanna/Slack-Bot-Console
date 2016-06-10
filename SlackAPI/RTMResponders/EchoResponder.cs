@@ -6,7 +6,7 @@ using System.ComponentModel;
 
 namespace Pook.SlackAPI.RTMResponders
 {
-    [Description("Tells you what you said")]
+    [Description("!")]
     public class EchoResponder : IMessageResponder
     {
         public bool CanRespond(Message message, SlackUser user)

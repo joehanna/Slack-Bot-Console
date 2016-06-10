@@ -14,7 +14,11 @@ namespace SlackAPI.RTMResponders
     {
         public bool CanRespond(Message message, SlackUser user)
         {
-            return message.text.StartsWith("help", StringComparison.OrdinalIgnoreCase);
+            return
+                message.text.StartsWith("?", StringComparison.OrdinalIgnoreCase) ||
+                message.text.StartsWith("help", StringComparison.OrdinalIgnoreCase) ||
+                message.text.StartsWith("what?", StringComparison.OrdinalIgnoreCase) ||
+                message.text.StartsWith("what can I", StringComparison.OrdinalIgnoreCase);
         }
 
         public Task Respond(ISlackSocket socket, Message message, SlackUser user)
@@ -23,6 +27,8 @@ namespace SlackAPI.RTMResponders
             foreach (var r in socket.Responders)
             {
                 var attr = (DescriptionAttribute)r.GetType().GetCustomAttributes(typeof(DescriptionAttribute), true).FirstOrDefault();
+                if (attr?.Description == "!")
+                    continue;
                 string name = CapitalToSpace(r.GetType().Name.Replace("Responder", string.Empty));
                 response.AppendLine($"*{name}* - {attr?.Description}");
             }
