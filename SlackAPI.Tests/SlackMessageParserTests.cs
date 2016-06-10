@@ -15,12 +15,8 @@ namespace SlackAPI.Tests
 		[Fact]
 		public void CanRecognizeTokens()
 		{
-			const string input = "REPEAT 4 [ FORWARD 100 LEFT 90 ] ";
-			var expectedTokens = new[] {
-				Token.REPEAT, Token.NUMBER, Token.LBRACKET,
-				Token.FORWARD, Token.NUMBER, Token.LEFT,
-				Token.NUMBER, Token.RBRACKET, Token.EOF
-			};
+			const string input = "<@U123|fred>";
+			var expectedTokens = new[] { Token.LANGLE, Token.AT, Token.WORD, Token.NUMBER, Token.PIPE, Token.WORD, Token.RANGLE };
 			var scanner = new SlackMessageScanner(input);
 			foreach (var expectedToken in expectedTokens)
 			{
@@ -32,107 +28,63 @@ namespace SlackAPI.Tests
 
 	public enum Token
 	{
-		[TokenAsText("REPEAT")]
-		REPEAT,
-		[TokenAsText("FORWARD")]
-		FORWARD,
-		[TokenAsText("BACK")]
-		BACK,
-		[TokenAsText("LEFT")]
-		LEFT,
-		[TokenAsText("RIGHT")]
-		RIGHT,
-		[TokenAsText("NUMBER")]
+		AT,
+		LANGLE,
+		RANGLE,
+		PIPE,
+		WORD,
 		NUMBER,
-		[TokenAsText("[")]
-		LBRACKET,
-		[TokenAsText("]")]
-		RBRACKET,
 		EOF,
 		NONE
-	}
-	public class TokenAsTextAttribute : Attribute
-	{
-		public TokenAsTextAttribute(string text)
-		{
-			Text = text;
-		}
-
-		public string Text { get; }
-	}
-	public static class TokenHelper
-	{
-		public static Token TextToToken(string s)
-		{
-			Type tokenType = typeof(Token);
-			MemberInfo[] fields = tokenType.GetMembers(BindingFlags.Public | BindingFlags.Static);
-			foreach (MemberInfo memberInfo in fields)
-			{
-				object[] attr = memberInfo.GetCustomAttributes(typeof(TokenAsTextAttribute), false);
-				if (attr.Length > 0)
-				{
-					string text = ((TokenAsTextAttribute)attr[0]).Text;
-					if (text.Equals(s))
-					{
-						return (Token)Enum.Parse(tokenType, memberInfo.Name);
-					}
-				}
-			}
-			return Token.NONE;
-		}
-
-		public static string TokenToText(Token token)
-		{
-			Type tokenType = typeof(Token);
-			MemberInfo[] field = tokenType.GetMember(Enum.GetName(tokenType, token));
-			object[] attr = field[0].GetCustomAttributes(typeof(TokenAsTextAttribute), false);
-			if (attr.Length > 0)
-			{
-				return ((TokenAsTextAttribute)attr[0]).Text;
-			}
-			return token.ToString();
-		}
 	}
 
 	public class SlackMessageScanner
 	{
-		readonly Token[] reserved = new[] { Token.FORWARD, Token.BACK, Token.RIGHT, Token.LEFT, Token.REPEAT };
-
-		private readonly string rawContents;
-		private string scanBuffer;
+		private readonly string text;
 		private int idx;
+		private string word;
 		private char ch;
 
 		public SlackMessageScanner(string input)
 		{
-			rawContents = input;
+			text = input;
 		}
 
 		public Token Scan()
 		{
-			while (idx < rawContents.Length)
+			while (idx < text.Length)
 			{
-				ch = rawContents[idx];
-				if (ch == '[')
+				ch = text[idx];
+				if (ch == '<')
 				{
 					idx++;
-					return Token.LBRACKET;
+					return Token.LANGLE;
 				}
-				else if (ch == ']')
+				else if (ch == '>')
 				{
 					idx++;
-					return Token.RBRACKET;
+					return Token.RANGLE;
+				}
+				else if (ch == '|')
+				{
+					idx++;
+					return Token.PIPE;
+				}
+				else if (ch == '@')
+				{
+					idx++;
+					return Token.AT;
 				}
 				else if (char.IsDigit(ch))
 				{
-					scanBuffer = ch.ToString();
+					word = ch.ToString();
 					idx++;
-					while (idx < rawContents.Length)
+					while (idx < text.Length)
 					{
-						ch = rawContents[idx];
+						ch = text[idx];
 						if (char.IsDigit(ch))
 						{
-							scanBuffer += ch;
+							word += ch;
 							idx++;
 						}
 						else break;
@@ -141,23 +93,20 @@ namespace SlackAPI.Tests
 				}
 				else if (char.IsLetter(ch))
 				{
-					scanBuffer = ch.ToString();
+					word = ch.ToString();
 					idx++;
-					while (idx < rawContents.Length)
+					while (idx < text.Length)
 					{
-						ch = rawContents[idx];
+						ch = text[idx];
 						if (char.IsLetter(ch))
 						{
-							scanBuffer += ch;
+							word += ch;
 							idx++;
 						}
 						else break;
 					}
-					Token lookup;
-					if (LookupReserved(scanBuffer, out lookup))
-						return lookup;
 
-					LexicalError();
+					return Token.WORD;
 				}
 				else if (char.IsWhiteSpace(ch))
 					idx++;
@@ -177,19 +126,13 @@ namespace SlackAPI.Tests
 
 		private void LexicalError()
 		{
-			throw new ScannerException("Lexical error at '{0}'('{1}')", ch, scanBuffer);
-		}
-
-		private bool LookupReserved(string s, out Token lookup)
-		{
-			lookup = TokenHelper.TextToToken(s);
-			return reserved.Contains(lookup);
+			throw new SlackMessageScannerException("Lexical error at '{0}'('{1}')", ch, word);
 		}
 	}
 
-	public class ScannerException : Exception
+	public class SlackMessageScannerException : Exception
 	{
-		public ScannerException(string message) : base(message) { }
-		public ScannerException(string message, params object[] args) : base(string.Format(message, args)) { }
+		public SlackMessageScannerException(string message) : base(message) { }
+		public SlackMessageScannerException(string message, params object[] args) : base(string.Format(message, args)) { }
 	}
 }

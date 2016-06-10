@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StringFormattingExtensions.cs" />
     <Compile Include="StringParseExtensions.cs" />
     <Compile Include="SlackMessageParserTests.cs" />
     <Compile Include="StringParseTests.cs" />
