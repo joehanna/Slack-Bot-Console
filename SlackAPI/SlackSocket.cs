@@ -15,9 +15,18 @@ namespace Pook.SlackAPI
 {
     public class SlackSocket : ISlackSocket
     {
-        private static UnixDateTimeConverter unixDateTimeConverter = new UnixDateTimeConverter();
         private readonly Dictionary<string, SlackEventHandler> handlers = new Dictionary<string, SlackEventHandler>();
         private readonly List<IMessageResponder> responders = new List<IMessageResponder>();
+        private static readonly JsonSerializerSettings jsonSettings;
+
+        static SlackSocket()
+        {
+            jsonSettings = new JsonSerializerSettings
+            {
+                DefaultValueHandling = DefaultValueHandling.Ignore,
+            };
+            jsonSettings.Converters.Add(new UnixDateTimeConverter());
+        }
 
         public SlackSocket(string token, string baseAddress = null, IWebSocket webSocket = null)
         {
@@ -164,7 +173,7 @@ namespace Pook.SlackAPI
 
         public async Task HandleMessage(string data)
         {
-            var message = JsonConvert.DeserializeObject<Message>(data, unixDateTimeConverter);
+            var message = JsonConvert.DeserializeObject<Message>(data, jsonSettings);
             if (string.IsNullOrEmpty(message?.text))
             {
                 Debug.WriteLine("Empty message");
@@ -278,7 +287,7 @@ namespace Pook.SlackAPI
 
             public void Handle(ISlackSocket socket, string data)
             {
-                object message = JsonConvert.DeserializeObject(data, messageType, unixDateTimeConverter);
+                object message = JsonConvert.DeserializeObject(data, messageType, jsonSettings);
                 handlerMethod.Invoke(handler, new[] { socket, message });
             }
         }
