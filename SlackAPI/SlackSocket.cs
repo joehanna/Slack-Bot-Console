@@ -24,6 +24,7 @@ namespace Pook.SlackAPI
             jsonSettings = new JsonSerializerSettings
             {
                 DefaultValueHandling = DefaultValueHandling.Ignore,
+                NullValueHandling = NullValueHandling.Ignore
             };
             jsonSettings.Converters.Add(new UnixDateTimeConverter());
         }
@@ -103,7 +104,7 @@ namespace Pook.SlackAPI
                 message.type = route.Type;
             }
 
-            sendQueue.Add(JsonConvert.SerializeObject(message, Formatting.None, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore }));
+            sendQueue.Add(JsonConvert.SerializeObject(message, Formatting.None, jsonSettings));
         }
 
         public void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback)
