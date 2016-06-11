@@ -32,7 +32,12 @@ namespace SlackAPI.Tests
 		public void Parse()
 		{
 			var text = "<@U123|fred> hello";
+			var result = new MsgParser(text).Parse();
 
+			Assert.Equal(2, result.Count);
+			Assert.Equal("U123", ((MsgParser.SlackID)result[0]).User);
+			Assert.Equal("fred", ((MsgParser.SlackID)result[0]).Name);
+			Assert.Equal("hello", ((MsgParser.WordNode)result[1]).Text);
 		}
 
 		[Fact]
@@ -83,8 +88,9 @@ namespace SlackAPI.Tests
 		}
 
 		private Scanner scanner;
+		public ParseResult Result { get; } = new ParseResult();
 
-		public void Parse()
+		public ParseResult Parse()
 		{
 			do
 			{
@@ -99,27 +105,40 @@ namespace SlackAPI.Tests
 						break;
 				}
 			} while (scanner.Token != Scanner.CharToken.EOF);
+			return Result;
 		}
 
 		private void ReadWord()
 		{
-			do
+			Result.Add(new WordNode
 			{
-				scanner.Next();
-			} while (scanner.Token != Scanner.CharToken.WS);
+				Text = scanner.ReadWord()
+			});
 		}
 
 		private void ReadSlackID()
 		{
-			do
+			var node = new SlackID();
+			scanner.Next();
+			if (scanner.Token != Scanner.CharToken.At)
+				throw new Exception();
+			scanner.Next();
+			node.User = scanner.ReadToAny(Scanner.CharToken.Pipe, Scanner.CharToken.RAngle);
+			if (scanner.Token == Scanner.CharToken.Pipe)
 			{
 				scanner.Next();
-			} while (scanner.Token != Scanner.CharToken.RAngle);
+				node.Name = scanner.ReadToAny(Scanner.CharToken.RAngle);
+			}
+			Result.Add(node);
 		}
 
-		public class Result : IEnumerable<Node>
+		public class ParseResult : IEnumerable<Node>
 		{
 			private readonly List<Node> nodes = new List<Node>();
+
+			public int Count => nodes.Count;
+
+			public Node this[int i] => nodes[i];
 
 			public void Add(Node node)
 			{
@@ -142,6 +161,10 @@ namespace SlackAPI.Tests
 		{
 			public string User { get; set; }
 			public string Name { get; set; }
+		}
+		public class WordNode : Node
+		{
+			public string Text { get; set; }
 		}
 	}
 
@@ -168,19 +191,29 @@ namespace SlackAPI.Tests
 		private int pos = 0;
 
 		private char ch;
-		private string currentWord;
 		public CharToken Token { get; private set; }
 		public int Position => pos;
 
-		public void ReadWord()
+		public string ReadToAny(params CharToken[] tokens)
 		{
-			var sb = new StringBuilder();
+			var start = pos - 1;
 			do
 			{
-				sb.Append(ch);
+				Next();
+			} while (!tokens.Contains(Token));
+			return text.Substring(start, pos - start - 1);
+		}
+
+		public string ReadWord()
+		{
+			var start = pos - 1;
+			do
+			{
 				Next();
 			} while (Token == CharToken.Char || Token == CharToken.Digit);
+			var end = pos;
 			SkipWhiteSpace();
+			return text.Substring(start, end - start);
 		}
 
 		public void SkipWhiteSpace()
