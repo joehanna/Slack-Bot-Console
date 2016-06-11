@@ -39,9 +39,9 @@ namespace Pook.SlackAPI
 		int closedEmitted;
 		private readonly IWebSocket socket;
 		int currentId;
-		public SlackState State		{			get;			private set;		}
+		public SlackState State { get; private set; }
 
-		public ISlackAPI API		{			get;		}
+		public ISlackAPI API { get; }
 
 		public event Action Connected;
 		public event Action<WebSocketException> ErrorSending;
@@ -49,7 +49,7 @@ namespace Pook.SlackAPI
 		public event Action ConnectionClosed;
 		public bool IsConnected => socket.IsConnected;
 		public IReadOnlyCollection<IMessageResponder> Responders => responders;
-		public Func<ISlackSocket, Message, SlackUser, Task> DefaultResponder		{			get;			set;		}
+		public Func<ISlackSocket, Message, SlackUser, Task> DefaultResponder { get; set; }
 
 		public SlackSocket AddEventHandler(Type eventHandlerType)
 		{
@@ -85,7 +85,7 @@ namespace Pook.SlackAPI
 			};
 		}
 
-		public void Send(SlackSocketMessage message)
+		public Task Send(SlackSocketMessage message)
 		{
 			if (message.id == 0)
 				message.id = Interlocked.Increment(ref currentId);
@@ -98,13 +98,14 @@ namespace Pook.SlackAPI
 			}
 
 			sendQueue.Add(JsonConvert.SerializeObject(message, Formatting.None, jsonSettings));
+			return Task.FromResult(0);
 		}
 
-		public void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback)
+		public Task Send(Message message, Action<ISlackSocket, Message, SlackUser> callback)
 		{
 			message.id = Interlocked.Increment(ref currentId);
 			callbacks.TryAdd(message.id, callback);
-			Send(message);
+			return Send(message);
 		}
 
 		private async Task HandleIncoming(string data)

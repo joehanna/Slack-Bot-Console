@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
+
 using Pook.SlackAPI;
-using Pook.SlackAPI.RTMMessages;
 
 namespace SlackConsole
 {
@@ -26,17 +25,16 @@ namespace SlackConsole
 			if (string.IsNullOrEmpty(token))
 				throw new Exception("a Slack RTM token MUST be supplied");
 
-            Trace.Listeners.Add(new ConsoleTraceListener());
+			Trace.Listeners.Add(new ConsoleTraceListener());
 
 			var socket = new SlackSocket(token)
-                .AddAllEventHandlers()
-                .AddAllResponders();
+				.AddAllEventHandlers()
+				.AddAllResponders();
 			socket.Login().Wait();
 			Console.WriteLine(socket.State.Url);
 
-            Console.Write("Press enter to quit...");
+			Console.Write("Press enter to quit...");
 			Console.ReadLine();
 		}
 	}
-
 }
