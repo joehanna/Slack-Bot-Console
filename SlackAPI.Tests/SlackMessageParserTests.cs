@@ -16,7 +16,7 @@ namespace SlackAPI.Tests
 		public void CanRecognizeTokens()
 		{
 			const string input = "<@U123|fred>";
-			var expectedTokens = new[] { Token.LANGLE, Token.AT, Token.WORD, Token.NUMBER, Token.PIPE, Token.WORD, Token.RANGLE };
+			var expectedTokens = new[] { SlackMessageToken.LANGLE, SlackMessageToken.AT, SlackMessageToken.WORD, SlackMessageToken.NUMBER, SlackMessageToken.PIPE, SlackMessageToken.WORD, SlackMessageToken.RANGLE };
 			var scanner = new SlackMessageScanner(input);
 			foreach (var expectedToken in expectedTokens)
 			{
@@ -26,7 +26,7 @@ namespace SlackAPI.Tests
 		}
 	}
 
-	public enum Token
+	public enum SlackMessageToken
 	{
 		AT,
 		LANGLE,
@@ -50,7 +50,7 @@ namespace SlackAPI.Tests
 			text = input;
 		}
 
-		public Token Scan()
+		public SlackMessageToken Scan()
 		{
 			while (idx < text.Length)
 			{
@@ -58,22 +58,22 @@ namespace SlackAPI.Tests
 				if (ch == '<')
 				{
 					idx++;
-					return Token.LANGLE;
+					return SlackMessageToken.LANGLE;
 				}
 				else if (ch == '>')
 				{
 					idx++;
-					return Token.RANGLE;
+					return SlackMessageToken.RANGLE;
 				}
 				else if (ch == '|')
 				{
 					idx++;
-					return Token.PIPE;
+					return SlackMessageToken.PIPE;
 				}
 				else if (ch == '@')
 				{
 					idx++;
-					return Token.AT;
+					return SlackMessageToken.AT;
 				}
 				else if (char.IsDigit(ch))
 				{
@@ -89,7 +89,7 @@ namespace SlackAPI.Tests
 						}
 						else break;
 					}
-					return Token.NUMBER;
+					return SlackMessageToken.NUMBER;
 				}
 				else if (char.IsLetter(ch))
 				{
@@ -106,17 +106,17 @@ namespace SlackAPI.Tests
 						else break;
 					}
 
-					return Token.WORD;
+					return SlackMessageToken.WORD;
 				}
 				else if (char.IsWhiteSpace(ch))
 					idx++;
 				else
 					LexicalError();
 			}
-			return Token.EOF;
+			return SlackMessageToken.EOF;
 		}
 
-		public Token NextToken()
+		public SlackMessageToken NextToken()
 		{
 			var oldIdx = idx;
 			var result = Scan();

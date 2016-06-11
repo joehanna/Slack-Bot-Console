@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -26,6 +27,34 @@ namespace SlackAPI.Tests
 			Assert.Equal("me", result[1]);
 			Assert.Equal("host", result[2]);
 		}
+
+		[Fact]
+		public void Parse()
+		{
+			var text = "<@U123|fred> hello";
+
+		}
+
+		[Fact]
+		public void CanRecognizeTokens()
+		{
+			const string input = "<@U1|f>";
+			var expectedTokens = new[] {
+				Scanner.CharToken.LAngle,
+				Scanner.CharToken.At,
+				Scanner.CharToken.Char,
+				Scanner.CharToken.Digit,
+				Scanner.CharToken.Pipe,
+				Scanner.CharToken.Char,
+				Scanner.CharToken.RAngle
+			};
+			var scanner = new Scanner(input);
+			foreach (var expectedToken in expectedTokens)
+			{
+				scanner.Next();
+				Assert.Equal(expectedToken, scanner.Token);
+			}
+		}
 	}
 
 	//public class SlackMessageParser
@@ -46,36 +75,161 @@ namespace SlackAPI.Tests
 	//	}
 	//}
 
-	class Scanner : StringReader
+	public class MsgParser
 	{
-		string currentWord;
-
-		public Scanner(string source) : base(source)
+		public MsgParser(string text)
 		{
-			readNextWord();
+			scanner = new Scanner(text);
 		}
 
-		private void readNextWord()
+		private Scanner scanner;
+
+		public void Parse()
 		{
-			var sb = new StringBuilder();
-			char nextChar;
-			int next;
 			do
 			{
-				next = Read();
-				if (next < 0)
-					break;
-				nextChar = (char)next;
-				if (char.IsWhiteSpace(nextChar))
-					break;
-				sb.Append(nextChar);
-			} while (true);
-			while (Peek() >= 0 && char.IsWhiteSpace((char)Peek()))
-				Read();
-			if (sb.Length > 0)
-				currentWord = sb.ToString();
-			else
-				currentWord = null;
+				scanner.Next();
+				switch (scanner.Token)
+				{
+					case Scanner.CharToken.LAngle:
+						ReadSlackID();
+						break;
+					case Scanner.CharToken.Char:
+						ReadWord();
+						break;
+				}
+			} while (scanner.Token != Scanner.CharToken.EOF);
+		}
+
+		private void ReadWord()
+		{
+			do
+			{
+				scanner.Next();
+			} while (scanner.Token != Scanner.CharToken.WS);
+		}
+
+		private void ReadSlackID()
+		{
+			do
+			{
+				scanner.Next();
+			} while (scanner.Token != Scanner.CharToken.RAngle);
+		}
+
+		public class Result : IEnumerable<Node>
+		{
+			private readonly List<Node> nodes = new List<Node>();
+
+			public void Add(Node node)
+			{
+				nodes.Add(node);
+			}
+
+			public IEnumerator<Node> GetEnumerator()
+			{
+				return nodes.GetEnumerator();
+			}
+
+			IEnumerator IEnumerable.GetEnumerator()
+			{
+				return GetEnumerator();
+			}
+		}
+
+		public abstract class Node { }
+		public class SlackID : Node
+		{
+			public string User { get; set; }
+			public string Name { get; set; }
+		}
+	}
+
+	public class Scanner
+	{
+		public enum CharToken
+		{
+			Char,
+			Digit,
+			WS,
+			LAngle,
+			RAngle,
+			Pipe,
+			At,
+			EOF
+		}
+
+		public Scanner(string source)
+		{
+			text = source;
+		}
+
+		private readonly string text;
+		private int pos = 0;
+
+		private char ch;
+		private string currentWord;
+		public CharToken Token { get; private set; }
+		public int Position => pos;
+
+		public void ReadWord()
+		{
+			var sb = new StringBuilder();
+			do
+			{
+				sb.Append(ch);
+				Next();
+			} while (Token == CharToken.Char || Token == CharToken.Digit);
+			SkipWhiteSpace();
+		}
+
+		public void SkipWhiteSpace()
+		{
+			while (Token == CharToken.WS)
+				Next();
+		}
+
+		public void Next()
+		{
+			var r = Read();
+			if (r < 0)
+			{
+				Token = CharToken.EOF;
+				return;
+			}
+
+			var ch = (char)r;
+			if (char.IsDigit(ch))
+				Token = CharToken.Digit;
+			else if (char.IsLetter(ch))
+				Token = CharToken.Char;
+			else if (char.IsWhiteSpace(ch))
+				Token = CharToken.WS;
+			else {
+				switch (ch)
+				{
+					case '@':
+						Token = CharToken.At;
+						break;
+					case '|':
+						Token = CharToken.Pipe;
+						break;
+					case '<':
+						Token = CharToken.LAngle;
+						break;
+					case '>':
+						Token = CharToken.RAngle;
+						break;
+				}
+			}
+		}
+
+		private int Read()
+		{
+			if (pos >= text.Length)
+				return -1;
+
+			return text[pos++];
 		}
 	}
 }
