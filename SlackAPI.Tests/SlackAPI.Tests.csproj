@@ -59,6 +59,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parser\SlackMessageParser.cs" />
+    <Compile Include="Parser\SlackMessageParseResult.cs" />
+    <Compile Include="Parser\SlackMessageScanner.cs" />
+    <Compile Include="Parser\SlackMessageScannerException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringFormattingExtensions.cs" />
     <Compile Include="StringParseExtensions.cs" />
