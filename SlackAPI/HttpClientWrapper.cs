@@ -33,8 +33,6 @@ namespace Pook.SlackAPI
 
 		public MediaTypeFormatter[] MediaTypeFormatters = DefaultFormatters;
 		public MediaTypeFormatter DefaultMediaTypeFormatter => MediaTypeFormatters[0];
-		public RetryPolicy RetryPolicy { get; set; } = null;
-
 
 		/// <summary>
 		/// Sets the time to wait before the request timesout
@@ -133,37 +131,11 @@ namespace Pook.SlackAPI
 		/// <returns></returns>
 		private async Task<HttpResponseMessage> SendAsync(Func<HttpRequestMessage> requestFactory)
 		{
-			var attemptNumber = 0;
-			HttpResponseMessage response = null;
-
-			while (true)
-			{
-				try
-				{
-					attemptNumber++;
-
-					// Use the requestFactory to recreate the request and content
-					var request = requestFactory();
-					response = await SendAsync(request).ConfigureAwait(false);
-					response.EnsureSuccessStatusCode();
-					return response;
-				}
-				catch (Exception ex)
-				{
-					int delay;
-					if (RetryPolicy == null)
-						throw;
-					if (!RetryPolicy.AttemptRetry(ex, response, attemptNumber, out delay))
-						throw;
-
-					await Task.Delay(delay * 1000);
-				}
-			}
-		}
-
-		public Task<HttpResponseMessage> SendAsync(HttpRequestMessage request)
-		{
-			return http.SendAsync(request);
+			// Use the requestFactory to recreate the request and content
+			var request = requestFactory();
+			var response = await http.SendAsync(request).ConfigureAwait(false);
+			response.EnsureSuccessStatusCode();
+			return response;
 		}
 
 		public HttpRequestMessage CreateRequest(string uri = null, HttpMethod httpMethod = null, Func<HttpContent> contentFactory = null)

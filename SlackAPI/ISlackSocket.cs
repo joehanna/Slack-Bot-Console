@@ -1,6 +1,8 @@
-using Pook.SlackAPI.RTMMessages;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+
+using Pook.SlackAPI.RTMMessages;
 
 namespace Pook.SlackAPI
 {
@@ -10,7 +12,7 @@ namespace Pook.SlackAPI
 		ISlackAPI API { get; }
 		IReadOnlyCollection<IMessageResponder> Responders { get; }
 
-		void Send(SlackSocketMessage message);
-		void Send(Message message, Action<ISlackSocket, Message, SlackUser> callback);
+		Task Send(SlackSocketMessage message);
+		Task Send(Message message, Action<ISlackSocket, Message, SlackUser> callback);
 	}
 }

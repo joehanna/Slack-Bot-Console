@@ -35,7 +35,6 @@ namespace Pook.SlackAPI
 			private HttpMessageHandler handler;
 			private IEnumerable<DelegatingHandler> handlers;
 			private MediaTypeFormatter[] formatters;
-			private RetryPolicy retryPolicy;
 
 			private HttpClient CreateHttp()
 			{
@@ -57,7 +56,6 @@ namespace Pook.SlackAPI
 				var wrapper = new HttpClientWrapper(http);
 				if (formatters != null)
 					wrapper.MediaTypeFormatters = formatters;
-				wrapper.RetryPolicy = retryPolicy;
 
 				return wrapper;
 			}
@@ -119,12 +117,6 @@ namespace Pook.SlackAPI
 			public Fluent WithFormatters(IEnumerable<MediaTypeFormatter> formatters)
 			{
 				this.formatters = formatters.ToArray();
-				return this;
-			}
-
-			public Fluent WithRetryPolicy(RetryPolicy retryPolicy)
-			{
-				this.retryPolicy = retryPolicy;
 				return this;
 			}
 
