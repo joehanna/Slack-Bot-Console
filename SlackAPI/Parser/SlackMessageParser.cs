@@ -1,16 +1,6 @@
 ﻿using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Reflection;
 
-using Xunit;
-
-using SlackAPI;
-using System.Collections.Generic;
-using System.Collections;
-
-namespace SlackAPI.Tests.Parser
+namespace SlackAPI.Parser
 {
 	public class SlackMessageParser
 	{
@@ -76,7 +66,6 @@ namespace SlackAPI.Tests.Parser
 			});
 			scanner.Next();
 		}
-
 		private void ReadSlackID()
 		{
 			var node = new SlackID();
@@ -102,6 +91,67 @@ namespace SlackAPI.Tests.Parser
 			}
 			scanner.Next();
 			Result.Add(node);
+		}
+	}
+
+	public abstract class Node
+	{
+		private Type type;
+		public Type NodeType { get { return type ?? (type = GetType()); } }
+	}
+
+	public class SlackID : Node
+	{
+		public enum IDType
+		{
+			ID,
+			Command,
+			Uri
+		}
+
+		public IDType Type { get; set; }
+		public SlackMessageSpan ID { get; set; }
+		public SlackMessageSpan Name { get; set; }
+
+		public override string ToString()
+		{
+			char? type = null;
+			switch (Type)
+			{
+				case IDType.ID:
+					type = '@';
+					break;
+				case IDType.Command:
+					type = '!';
+					break;
+			}
+
+			return $"<{type}{ID}|{Name}>";
+		}
+	}
+
+	public class ChannelNode : Node
+	{
+		public SlackMessageSpan Name { get; set; }
+		public override string ToString()
+		{
+			return $"#{Name.ToString()}";
+		}
+	}
+	public class WordNode : Node
+	{
+		public SlackMessageSpan Text { get; set; }
+		public override string ToString()
+		{
+			return Text.ToString();
+		}
+	}
+	public class SlugNode : Node
+	{
+		public SlackMessageSpan Text { get; set; }
+		public override string ToString()
+		{
+			return "{" + Text.ToString() + "}";
 		}
 	}
 }

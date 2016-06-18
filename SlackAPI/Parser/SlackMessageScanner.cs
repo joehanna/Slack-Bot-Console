@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace SlackAPI.Tests.Parser
+namespace SlackAPI.Parser
 {
 	public class SlackMessageScanner
 	{
@@ -36,29 +36,29 @@ namespace SlackAPI.Tests.Parser
 		public Tokens Token { get; private set; }
 		public int Position => pos;
 
-		public string ReadTo(Tokens token)
+		public SlackMessageSpan ReadTo(Tokens token)
 		{
 			var start = pos;
 			do
 			{
 				Next();
 			} while (Token != token);
-			return text.Substring(start, pos - start);
+			return new SlackMessageSpan(text, start, pos - start);
 		}
-		public string ReadToAny(params Tokens[] tokens)
+		public SlackMessageSpan ReadToAny(params Tokens[] tokens)
 		{
 			var start = pos;
 			do
 			{
 				Next();
 			} while (!tokens.Contains(Token));
-			return text.Substring(start, pos - start);
+			return new SlackMessageSpan(text, start, pos - start);
 		}
 
-		public string ReadWord()
+		public SlackMessageSpan ReadWord()
 		{
 			if (Token != Tokens.CHAR && Token != Tokens.DIGIT)
-				return string.Empty;
+				return SlackMessageSpan.Empty;
 
 			var start = pos;
 			do
@@ -66,9 +66,8 @@ namespace SlackAPI.Tests.Parser
 				Next();
 			} while (Token == Tokens.CHAR || Token == Tokens.DIGIT);
 
-			return text.Substring(start, pos - start);
+			return new SlackMessageSpan(text, start, pos - start);
 		}
-
 		public void SkipWhiteSpace()
 		{
 			while (Token == Tokens.WS)
@@ -128,7 +127,6 @@ namespace SlackAPI.Tests.Parser
 					break;
 			}
 		}
-
 		private int Read()
 		{
 			if (++pos >= text.Length)

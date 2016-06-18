@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SlackAPI.Tests.Parser
+namespace SlackAPI.Parser
 {
 	public class SlackMessageScannerException : Exception
 	{

@@ -1,13 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.IO;
-using System.Reflection;
-
+﻿
 using Xunit;
 
-using SlackAPI.Tests.Parser;
-using System.Diagnostics;
+using SlackAPI.Parser;
 using Xunit.Abstractions;
 
 namespace SlackAPI.Tests

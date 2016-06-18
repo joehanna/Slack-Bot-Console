@@ -59,11 +59,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Parser\SlackMessageParser.cs" />
-    <Compile Include="Parser\SlackMessageParseResult.cs" />
-    <Compile Include="Parser\SlackMessageScanner.cs" />
-    <Compile Include="Parser\SlackMessageScannerException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SpanTests.cs" />
     <Compile Include="StringFormattingExtensions.cs" />
     <Compile Include="StringParseExtensions.cs" />
     <Compile Include="SlackMessageParserTests.cs" />
@@ -74,6 +71,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SlackAPI\SlackAPI.csproj">
+      <Project>{d67d593d-29d1-47b8-950c-80baac8af01c}</Project>
+      <Name>SlackAPI</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
