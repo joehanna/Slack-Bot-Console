@@ -21,6 +21,6 @@
     </dependencies>
   </metadata>
     <files>
-        <file src="bin\$configuration$\SlackAPI.WebSocket4Net.dll" target="lib\net45\SlackAPI.WebSocket4Net.dll" />
+        <file src="SlackAPI.WebSocket4Net\bin\$configuration$\SlackAPI.WebSocket4Net.dll" target="lib\net45\SlackAPI.WebSocket4Net.dll" />
     </files>
 </package>
