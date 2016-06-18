@@ -33,9 +33,7 @@ namespace SlackAPI.RTMResponders
 				response.AppendLine($"*{name}* - {attr?.Description}");
 			}
 
-			socket.Send(message.Reply("Here's is what I know \n>>>" + response.ToString()));
-
-			return Task.FromResult(0);
+			return socket.Send(message.Reply("Here's is what I know \n>>>" + response.ToString()));
 		}
 
 		private string CapitalToSpace(string text)

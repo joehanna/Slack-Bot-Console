@@ -69,8 +69,12 @@
     <Compile Include="ISlackSocketExtensions.cs" />
     <Compile Include="IWebSocket.cs" />
     <Compile Include="NetWebSocket.cs" />
+    <Compile Include="Parser\SlackMessageParser.cs" />
+    <Compile Include="Parser\SlackMessageParseResult.cs" />
+    <Compile Include="Parser\SlackMessageScanner.cs" />
+    <Compile Include="Parser\SlackMessageScannerException.cs" />
+    <Compile Include="Parser\SlackMessageSpan.cs" />
     <Compile Include="QueueHandler.cs" />
-    <Compile Include="RetryPolicy.cs" />
     <Compile Include="RTMMessages\ReconnectUrl.cs" />
     <Compile Include="RTMHandlers\ReconnectUrlHandler.cs" />
     <Compile Include="RTMResponders\EchoResponder.cs" />

@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
     <files>
-        <file src="bin\$configuration$\SlackAPI.dll" target="lib\net45\SlackAPI.dll" />
+        <file src="SlackAPI\bin\$configuration$\SlackAPI.dll" target="lib\net45\SlackAPI.dll" />
     </files>
 </package>
